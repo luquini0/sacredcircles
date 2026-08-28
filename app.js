@@ -298,9 +298,12 @@ const targetCamY = -mouseTargetY * 0.7
 
 camera.position.x += (targetCamX - camera.position.x) * 0.03
 camera.position.y += (targetCamY - camera.position.y) * 0.03
-camera.lookAt(0,0,0)
 
 }
+
+/* look slightly below the object so it sits centered in the gap
+   between the (short) header and the (taller) title/text/button block below it */
+camera.lookAt(0, -0.7, 0)
 
 renderer.render(scene,camera)
 
