@@ -15,14 +15,17 @@
 <link rel="stylesheet" href="style.css">
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128/examples/js/controls/OrbitControls.js"></script>
 
 </head>
 
 
 <body>
 
-<div class="background-layer"></div>
+<!-- ANIMATED 3D BACKGROUND -->
+
+<canvas id="webgl"></canvas>
+
+<div id="loader"></div>
 
 <!-- LOGO / HEADER CENTRAL -->
 
@@ -35,19 +38,9 @@
 
 
 
-<!-- PRODUCT VIEWER -->
+<!-- SPACER (background scene shows through) -->
 
-<section class="viewer-section">
-
-<div class="viewer-container">
-
-<div id="loader"></div>
-
-<canvas id="webgl"></canvas>
-
-</div>
-
-</section>
+<section class="viewer-section"></section>
 
 
 

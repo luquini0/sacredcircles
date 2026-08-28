@@ -5,13 +5,13 @@ const scene = new THREE.Scene()
 
 
 const camera = new THREE.PerspectiveCamera(
-45,
-canvas.clientWidth / canvas.clientHeight,
+50,
+window.innerWidth / window.innerHeight,
 0.1,
 100
 )
 
-camera.position.set(0,0,5)
+camera.position.set(0,0,7)
 
 
 
@@ -21,7 +21,7 @@ alpha:true,
 antialias:true
 })
 
-renderer.setSize(canvas.clientWidth,canvas.clientHeight)
+renderer.setSize(window.innerWidth, window.innerHeight)
 
 renderer.setPixelRatio(Math.min(window.devicePixelRatio,2))
 
@@ -45,18 +45,6 @@ scene.add(rimLight)
 
 const ambient = new THREE.AmbientLight(0xffffff,0.55)
 scene.add(ambient)
-
-
-
-/* CONTROLS */
-
-const controls = new THREE.OrbitControls(camera,renderer.domElement)
-
-controls.enablePan=false
-controls.enableZoom=false
-
-controls.enableDamping=true
-controls.dampingFactor=0.08
 
 
 
@@ -119,18 +107,94 @@ opacity:0.22
 const halo = new THREE.Mesh(haloGeo, haloMat)
 model.add(halo)
 
-model.scale.set(1,1,1)
 scene.add(model)
 
-document.getElementById("loader").style.display="none"
 
-const clock = new THREE.Clock()
 
-animate()
+/* DISTANT BACKGROUND RINGS — big, faint, slow — pure atmosphere/depth */
+
+const farRingMat = new THREE.MeshBasicMaterial({
+color:0xd3ac6e,
+transparent:true,
+opacity:0.09
+})
+
+const farRing1 = new THREE.Mesh(new THREE.TorusGeometry(4.4, 0.012, 8, 128), farRingMat)
+farRing1.rotation.x = Math.PI/2.6
+farRing1.position.z = -3.5
+scene.add(farRing1)
+
+const farRing2 = new THREE.Mesh(new THREE.TorusGeometry(5.6, 0.008, 8, 128), farRingMat)
+farRing2.rotation.x = Math.PI/1.8
+farRing2.rotation.y = 0.6
+farRing2.position.z = -4.5
+scene.add(farRing2)
+
+const farRing3 = new THREE.Mesh(new THREE.TorusGeometry(3.2, 0.01, 8, 128), farRingMat)
+farRing3.rotation.x = Math.PI/2
+farRing3.rotation.y = -0.8
+farRing3.position.z = -2.6
+scene.add(farRing3)
+
+
+
+/* PARTICLE FIELD — slow-drifting gold dust for depth */
+
+const particleCount = 420
+const particlePositions = new Float32Array(particleCount * 3)
+
+for(let i=0;i<particleCount;i++){
+
+const radius = 3.5 + Math.random() * 9
+const theta = Math.random() * Math.PI * 2
+const phi = Math.acos((Math.random() * 2) - 1)
+
+particlePositions[i*3]   = radius * Math.sin(phi) * Math.cos(theta)
+particlePositions[i*3+1] = radius * Math.sin(phi) * Math.sin(theta)
+particlePositions[i*3+2] = (radius * Math.cos(phi)) - 3
+
+}
+
+const particleGeo = new THREE.BufferGeometry()
+particleGeo.setAttribute("position", new THREE.BufferAttribute(particlePositions, 3))
+
+const particleMat = new THREE.PointsMaterial({
+color:0xd3ac6e,
+size:0.028,
+transparent:true,
+opacity:0.55,
+depthWrite:false,
+blending:THREE.AdditiveBlending
+})
+
+const particles = new THREE.Points(particleGeo, particleMat)
+scene.add(particles)
+
+
+
+/* LOADER OUT */
+
+document.getElementById("loader").style.display = "none"
+
+
+
+/* MOUSE PARALLAX — subtle camera drift, no drag-to-rotate */
+
+let mouseTargetX = 0
+let mouseTargetY = 0
+
+document.addEventListener("mousemove", (e)=>{
+
+mouseTargetX = (e.clientX / window.innerWidth - 0.5)
+mouseTargetY = (e.clientY / window.innerHeight - 0.5)
+
+})
 
 
 
 /* RENDER */
+
+const clock = new THREE.Clock()
 
 function animate(){
 
@@ -148,11 +212,25 @@ rings.forEach((ring,i)=>{
 ring.rotation.z += 0.0009 * (i % 2 === 0 ? 1 : -1)
 })
 
-controls.update()
+farRing1.rotation.z = t * 0.03
+farRing2.rotation.z = -t * 0.02
+farRing3.rotation.z = t * 0.025
+
+particles.rotation.y = t * 0.015
+particles.rotation.x = Math.sin(t * 0.1) * 0.05
+
+const targetCamX = mouseTargetX * 1.1
+const targetCamY = -mouseTargetY * 0.7
+
+camera.position.x += (targetCamX - camera.position.x) * 0.03
+camera.position.y += (targetCamY - camera.position.y) * 0.03
+camera.lookAt(0,0,0)
 
 renderer.render(scene,camera)
 
 }
+
+animate()
 
 
 
@@ -160,30 +238,12 @@ renderer.render(scene,camera)
 
 window.addEventListener("resize",()=>{
 
-const width = canvas.clientWidth
-const height = canvas.clientHeight
+const width = window.innerWidth
+const height = window.innerHeight
 
 camera.aspect = width/height
 camera.updateProjectionMatrix()
 
 renderer.setSize(width,height)
-
-})
-
-
-
-/* BACKGROUND PARALLAX */
-
-const background = document.querySelector(".background-layer")
-
-document.addEventListener("mousemove", (e)=>{
-
-const x = (e.clientX / window.innerWidth - 0.5)
-const y = (e.clientY / window.innerHeight - 0.5)
-
-const moveX = x * 40
-const moveY = y * 40
-
-background.style.transform = `translate(${moveX}px, ${moveY}px) scale(1.05)`
 
 })
