@@ -124,13 +124,13 @@ scene.add(model)
 
 document.getElementById("loader").style.display="none"
 
+const clock = new THREE.Clock()
+
 animate()
 
 
 
 /* RENDER */
-
-const clock = new THREE.Clock()
 
 function animate(){
 
