@@ -178,17 +178,79 @@ document.getElementById("loader").style.display = "none"
 
 
 
-/* MOUSE PARALLAX — subtle camera drift, no drag-to-rotate */
+/* INTERACTION
+   — moving the mouse over open background: the camera drifts slightly (parallax), automatic.
+   — click-dragging near the object: rotates the object itself, like before.
+   — everything else (particles, far rings, core/halo detail spin, background drift) keeps
+     animating on its own regardless of what the user does. */
 
 let mouseTargetX = 0
 let mouseTargetY = 0
 
-document.addEventListener("mousemove", (e)=>{
+let isDraggingModel = false
+let dragLastX = 0
+let dragLastY = 0
+
+let autoRotY = 0
+let manualRotY = 0
+let manualRotX = 0
+
+const HIT_RADIUS = 230
+
+function projectToScreen(vec3){
+
+const v = vec3.clone()
+v.project(camera)
+
+return {
+x: (v.x * 0.5 + 0.5) * window.innerWidth,
+y: (-v.y * 0.5 + 0.5) * window.innerHeight
+}
+
+}
+
+const modelOrigin = new THREE.Vector3(0,0,0)
+
+window.addEventListener("mousemove", (e)=>{
 
 mouseTargetX = (e.clientX / window.innerWidth - 0.5)
 mouseTargetY = (e.clientY / window.innerHeight - 0.5)
 
 })
+
+window.addEventListener("pointerdown", (e)=>{
+
+const screenPos = projectToScreen(modelOrigin)
+const dist = Math.hypot(e.clientX - screenPos.x, e.clientY - screenPos.y)
+
+if(dist <= HIT_RADIUS){
+isDraggingModel = true
+dragLastX = e.clientX
+dragLastY = e.clientY
+}
+
+})
+
+window.addEventListener("pointermove", (e)=>{
+
+if(!isDraggingModel) return
+
+const deltaX = e.clientX - dragLastX
+const deltaY = e.clientY - dragLastY
+
+dragLastX = e.clientX
+dragLastY = e.clientY
+
+manualRotY += deltaX * 0.006
+manualRotX += deltaY * 0.006
+
+manualRotX = Math.max(-0.8, Math.min(0.8, manualRotX))
+
+})
+
+window.addEventListener("pointerup", ()=>{ isDraggingModel = false })
+window.addEventListener("pointercancel", ()=>{ isDraggingModel = false })
+window.addEventListener("pointerleave", ()=>{ isDraggingModel = false })
 
 
 
@@ -196,13 +258,23 @@ mouseTargetY = (e.clientY / window.innerHeight - 0.5)
 
 const clock = new THREE.Clock()
 
+let lastFrameTime = clock.getElapsedTime()
+
 function animate(){
 
 requestAnimationFrame(animate)
 
 const t = clock.getElapsedTime()
+const dt = t - lastFrameTime
+lastFrameTime = t
 
-model.rotation.y = t * 0.18
+if(!isDraggingModel){
+autoRotY += dt * 0.18
+}
+
+model.rotation.y = autoRotY + manualRotY
+model.rotation.x = manualRotX
+
 core.rotation.y = -t * 0.4
 core.rotation.x = t * 0.15
 halo.rotation.y = -t * 0.25
@@ -219,12 +291,16 @@ farRing3.rotation.z = t * 0.025
 particles.rotation.y = t * 0.015
 particles.rotation.x = Math.sin(t * 0.1) * 0.05
 
+if(!isDraggingModel){
+
 const targetCamX = mouseTargetX * 1.1
 const targetCamY = -mouseTargetY * 0.7
 
 camera.position.x += (targetCamX - camera.position.x) * 0.03
 camera.position.y += (targetCamY - camera.position.y) * 0.03
 camera.lookAt(0,0,0)
+
+}
 
 renderer.render(scene,camera)
 
