@@ -195,7 +195,9 @@ let autoRotY = 0
 let manualRotY = 0
 let manualRotX = 0
 
-const HIT_RADIUS = 230
+function getHitRadius(){
+return Math.max(230, Math.min(window.innerWidth, window.innerHeight) * 0.4)
+}
 
 function projectToScreen(vec3){
 
@@ -223,17 +225,20 @@ window.addEventListener("pointerdown", (e)=>{
 const screenPos = projectToScreen(modelOrigin)
 const dist = Math.hypot(e.clientX - screenPos.x, e.clientY - screenPos.y)
 
-if(dist <= HIT_RADIUS){
+if(dist <= getHitRadius()){
 isDraggingModel = true
 dragLastX = e.clientX
 dragLastY = e.clientY
+e.preventDefault()
 }
 
-})
+}, { passive:false })
 
 window.addEventListener("pointermove", (e)=>{
 
 if(!isDraggingModel) return
+
+e.preventDefault()
 
 const deltaX = e.clientX - dragLastX
 const deltaY = e.clientY - dragLastY
@@ -246,7 +251,7 @@ manualRotX += deltaY * 0.006
 
 manualRotX = Math.max(-0.8, Math.min(0.8, manualRotX))
 
-})
+}, { passive:false })
 
 window.addEventListener("pointerup", ()=>{ isDraggingModel = false })
 window.addEventListener("pointercancel", ()=>{ isDraggingModel = false })
