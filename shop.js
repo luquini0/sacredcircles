@@ -114,6 +114,7 @@
     const email = $("#mEmail").value.trim();
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { err.textContent = t(...ERR.bad_email); return; }
     if (!$("#mTerms").checked) { err.textContent = t("Aceptá los términos para continuar.", "Please accept the terms to continue."); return; }
+    if (/COMPLETAR/.test(window.SC.API)) { err.textContent = t("La tienda abre muy pronto. ¡Gracias por tu interés!", "The store opens very soon. Thank you for your interest!"); return; }
     btn.disabled = true; btn.textContent = t("Un momento…", "One moment…");
     try {
       const r = await api("/api/checkout", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ items: [...sel], email, method, lang: SCU.lang(), size: dlSize }) });
