@@ -26,18 +26,20 @@
   }
 
   async function refresh() {
-    const r = await api(`/api/order?o=${encodeURIComponent(O)}&t=${encodeURIComponent(T)}`).catch(() => null);
-    if (!r || !r.ok) return null;
+    const r = await api(`/api/order?o=${encodeURIComponent(O)}&t=${encodeURIComponent(T)}`).catch(() => ({ net: true }));
+    if (r.net) return "net";
+    if (!r.ok) return null;
     order = r.data; size = order.size || size; return order;
   }
 
   async function load() {
     if (!O || !T) return fail();
     const r = await refresh();
-    if (!r) return fail(true);
+    if (r === "net") return fail(true);
+    if (!r) return fail(false);
     draw();
     if (order.status === "pending") timer = setInterval(async () => {
-      if (!(await refresh()) || order.status === "pending") return;
+      const x = await refresh(); if (!x || x === "net" || order.status === "pending") return;
       clearInterval(timer); timer = null; draw();
     }, 5000);
   }
