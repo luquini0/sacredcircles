@@ -45,7 +45,7 @@
   SCU.init(EN);
 
   /* ---- precios ---- */
-  const P = { book: 4, bundle: 10 };
+  const P = { book: 5, bundle: 12 };
   const NAMES = { kids: ["Niños", "Kids"], teens: ["Adolescentes", "Teens"], adults: ["Adultos", "Adults"] };
   const bookName = (k) => t(NAMES[k][0], NAMES[k][1]);
   const priceOf = (n) => (n === 3 ? P.bundle : n * P.book);
@@ -56,7 +56,15 @@
     $$('[data-price="three"]').forEach((e) => (e.textContent = usd(P.book * 3)));
   }
   paintPrices();
-  api("/api/config").then((r) => { if (r.ok) { P.book = r.data.priceBookUsd; P.bundle = r.data.priceBundleUsd; paintPrices(); render(); } }).catch(() => {});
+  const avail = { mp: true, usdt: true };
+  api("/api/config").then((r) => {
+    if (!r.ok) return;
+    P.book = r.data.priceBookUsd; P.bundle = r.data.priceBundleUsd; paintPrices(); render();
+    avail.mp = !!r.data.mp; avail.usdt = !!r.data.usdt;
+    $$(".pay button").forEach((b) => { const off = !avail[b.dataset.method]; b.disabled = off; b.style.opacity = off ? ".45" : ""; if (off) { const sm = $("small", b); sm.textContent = t("Próximamente", "Coming soon"); } });
+    const first = ["mp", "usdt"].find((m) => avail[m]);
+    if (first) { method = first; $$(".pay button").forEach((x) => x.setAttribute("aria-pressed", String(x.dataset.method === first))); }
+  }).catch(() => {});
 
   /* ---- carrito ---- */
   const sel = new Set();
@@ -114,7 +122,7 @@
     const email = $("#mEmail").value.trim();
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { err.textContent = t(...ERR.bad_email); return; }
     if (!$("#mTerms").checked) { err.textContent = t("Aceptá los términos para continuar.", "Please accept the terms to continue."); return; }
-    if (/COMPLETAR/.test(window.SC.API)) { err.textContent = t("La tienda abre muy pronto. ¡Gracias por tu interés!", "The store opens very soon. Thank you for your interest!"); return; }
+    if (/COMPLETAR/.test(window.SC.API) || (!avail.mp && !avail.usdt)) { err.textContent = t("La tienda abre muy pronto. ¡Gracias por tu interés!", "The store opens very soon. Thank you for your interest!"); return; }
     btn.disabled = true; btn.textContent = t("Un momento…", "One moment…");
     try {
       const r = await api("/api/checkout", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ items: [...sel], email, method, lang: SCU.lang(), size: dlSize }) });
