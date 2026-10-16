@@ -6,16 +6,16 @@
 
   const EN = {
     nav_books: "Books", nav_samples: "Samples", nav_trees: "Trees", nav_faq: "FAQ",
-    hero_eyebrow: "Sacred geometry to colour", hero_h1: "A circle to <em>come back to yourself</em>",
-    hero_lead: "Three books of 25 symmetrical mandalas, from simple to intricate. Vector PDF to print at any size. And 30% of every sale plants native trees.",
-    hero_cta: "See the books", hero_cta2: "Our forest",
+    chip: "75 mandalas · vector PDF", t1: "Instant download", t2: "A5 · A4 · Letter · A3 · A2", t3: "30% for native trees", books_k: "Collection", samples_k: "Inside", how_k: "How it works", tree_k: "Reforestation", faq_k: "Questions", hero_h1: "A circle to <em>come back to yourself</em>",
+    hero_lead: "Three books of 25 symmetrical mandalas, from simple to intricate. Print them at any size, colour at your own pace and, with each one, we plant native trees.",
+    hero_cta: "See the books", hero_cta2: "Peek inside",
     books_h2: "Choose your book", books_sub: "Each book has 25 mandalas of rising difficulty, elegant from the very first. Pay once and download in the size you need.",
     b_kids: "Kids", b_kids_age: "To start painting", b_kids_p: "Large rounded shapes, clear lines and plenty of room to try every colour.",
     b_teens: "Teens", b_teens_age: "Layers and rhythm", b_teens_p: "Double lines, layers and patterns with more movement. A stylish challenge to test palettes and gradients.",
     b_adults: "Adults", b_adults_age: "Calm and detail", b_adults_p: "Fine curves and intricate geometry, made to be coloured slowly, one layer at a time.",
     b_25: "25 mandalas", add: "Add", added: "Added ✓",
     pack_h: "Pack of all 3 books", pack_p: "75 mandalas to colour at your own pace. You save and we plant more.", buy_pack: "Buy the pack",
-    samples_h2: "See what's inside", samples_sub: "Three pages from each book. Drawn with vector curves: total symmetry and clean lines that never pixelate at any size.",
+    samples_h2: "This is how they look, this is how you'll colour them", samples_sub: "Three pages from each book. Hover (or tap) to see an idea of how they look coloured. Vector curves: total symmetry and clean lines at any size.",
     samples_note: "Reduced preview. In the book every mandala fills a full page.",
     how_h2: "Easy to buy, made to print", how_sub: "Pay, get your link, download. No accounts, no passwords.",
     s1_h: "Choose", s1_p: "One, two or all three books.", s2_h: "Pay", s2_p: "Mercado Pago from Argentina, or USDT from anywhere in the world.",
@@ -138,7 +138,9 @@
   /* ---- muestras ---- */
   const grid = $("#samples");
   function samples(book) {
-    grid.innerHTML = [4, 13, 22].map((n) => `<figure class="sample" style="margin:0"><img src="images/muestra-${book}-${String(n).padStart(2, "0")}.webp" alt="${t("Mandala de muestra", "Sample mandala")} ${n}" loading="lazy" draggable="false"><span>${t("Mandala", "Mandala")} ${n}</span></figure>`).join("");
+    grid.innerHTML = [4, 13, 22].map((n) => { const id = `${book}-${String(n).padStart(2, "0")}`;
+      return `<figure class="sample" tabindex="0" aria-label="${t("Mandala de muestra", "Sample mandala")} ${n}"><img class="ln" src="images/muestra-${id}.webp" alt="${t("Mandala de muestra", "Sample mandala")} ${n}" loading="lazy" draggable="false"><img class="cl" src="images/color-${id}.webp" alt="" loading="lazy" draggable="false"><span>Mandala ${n}</span></figure>`; }).join("");
+    $$(".sample", grid).forEach((f) => { const tg = () => f.classList.toggle("on"); f.addEventListener("click", tg); f.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); tg(); } }); });
   }
   let curTab = "ninos";
   $$(".tab").forEach((b) => b.addEventListener("click", () => {
