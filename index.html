@@ -133,8 +133,8 @@
     <div class="grid4">
       <div class="step"><div class="n">1</div><h3 data-i18n="s1_h">Elegís</h3><p data-i18n="s1_p">Uno, dos o los tres libros.</p></div>
       <div class="step"><div class="n">2</div><h3 data-i18n="s2_h">Pagás</h3><p data-i18n="s2_p">Mercado Pago desde Argentina, o USDT desde cualquier parte del mundo.</p></div>
-      <div class="step"><div class="n">3</div><h3 data-i18n="s3_h">Recibís tu pedido</h3><p data-i18n="s3_p">Aparece al instante, con un número de pedido para recuperarlo cuando quieras.</p></div>
-      <div class="step"><div class="n">4</div><h3 data-i18n="s4_h">Descargás e imprimís</h3><p data-i18n="s4_p">PDF o ZIP, en A5, A4, Carta, A3 o A2.</p></div>
+      <div class="step"><div class="n">3</div><h3 data-i18n="s3_h">Recibís tu pedido</h3><p data-i18n="s3_p">Se confirma y la descarga empieza sola. Guardá tu número de pedido para volver a bajarlo.</p></div>
+      <div class="step"><div class="n">4</div><h3 data-i18n="s4_h">Descargás e imprimís</h3><p data-i18n="s4_p">PDF o ZIP en A5, A4, Carta, A3 o A2, con tu licencia personal.</p></div>
     </div>
     <div class="grid4 feat">
       <div class="step"><div class="n">∞</div><h3 data-i18n="f1_h">Vectorial</h3><p data-i18n="f1_p">Se imprime nítido desde 10 hasta 50 cm.</p></div>
@@ -171,7 +171,7 @@
     <h2 data-i18n="faq_h2">Preguntas frecuentes</h2>
     <p class="sub"></p>
     <div class="faq">
-      <details><summary data-i18n="q1">¿Cómo recibo mis libros?</summary><p data-i18n="a1">Apenas se confirma el pago ves tu página de descargas, con tu número de pedido. Desde ahí elegís el tamaño y bajás cada libro por separado o todos en un ZIP. Guardá el número: con tu email te permite recuperar los libros cuando quieras.</p></details>
+      <details><summary data-i18n="q1">¿Cómo recibo mis libros?</summary><p data-i18n="a1">Elegís el tamaño al comprar y, apenas se confirma el pago, la descarga empieza sola (un PDF, o un ZIP si compraste varios libros). Después podés volver a bajarlos una vez por semana, contada desde la primera descarga, con tu email y tu número de pedido.</p></details>
       <details><summary data-i18n="q2">¿Con qué puedo pagar?</summary><p data-i18n="a2">Con Mercado Pago (tarjeta, transferencia o efectivo en Argentina; el precio se convierte a pesos al momento de pagar) o con USDT en la red TRON (TRC20) desde cualquier país.</p></details>
       <details><summary data-i18n="q3">¿Puedo imprimirlo en cualquier tamaño?</summary><p data-i18n="a3">Sí. Los mandalas son vectoriales: elegís A5, A4, Carta, A3 o A2 y se ven nítidos. Para tamaños especiales (por ejemplo 40 × 40 cm) escribinos por Instagram.</p></details>
       <details><summary data-i18n="q4">¿Puedo compartirlo con otras personas?</summary><p data-i18n="a4">Cada compra incluye una licencia personal e intransferible, y tu copia lleva tu email y número de pedido. Podés imprimirlo las veces que quieras para tu uso personal; el archivo no se puede compartir, revender ni publicar.</p></details>
@@ -206,6 +206,9 @@
         <button type="button" data-method="mp" aria-pressed="true">Mercado Pago<small data-i18n="m_mp">Argentina · pesos</small></button>
         <button type="button" data-method="usdt" aria-pressed="false">USDT<small data-i18n="m_usdt">Todo el mundo · TRC20</small></button>
       </div>
+      <label class="f" data-i18n="m_size">Tamaño de tu descarga</label>
+      <div class="sizes" id="mSizes"><button type="button" data-s="A5" aria-pressed="false">A5</button><button type="button" data-s="A4" aria-pressed="true">A4</button><button type="button" data-s="LETTER" aria-pressed="false"><span data-i18n="letter">Carta</span></button><button type="button" data-s="A3" aria-pressed="false">A3</button><button type="button" data-s="A2" aria-pressed="false">A2</button></div>
+      <p class="hint" style="margin-bottom:0" data-i18n="m_size_hint">Tu descarga empieza sola al confirmarse el pago. Después podrás volver a bajarla una vez por semana.</p>
       <label class="chk"><input type="checkbox" id="mTerms"><span data-i18n="m_terms">Acepto los <a href="legal.html#terminos" target="_blank" rel="noopener">términos y la licencia personal</a>.</span></label>
       <button class="btn primary" id="mPay" type="button" style="width:100%" data-i18n="m_go">Continuar al pago</button>
       <p class="err" id="mErr" role="alert"></p>
@@ -218,7 +221,7 @@
       <div class="qr" id="uQr"></div>
       <div class="copy"><code id="uAddr"></code><button type="button" id="uCopy" data-i18n="copy">COPIAR</button></div>
       <p class="wait"><span class="spin"></span><span data-i18n="u_wait">Esperando tu pago… se confirma solo (1–3 min).</span></p>
-      <p style="font-size:13px;color:var(--ink-mute);margin-top:12px" data-i18n="u_warn">Otras redes o montos distintos no se acreditan. Podés cerrar esta ventana: tu pedido queda guardado y lo recuperás con tu email y número de pedido.</p>
+      <p style="font-size:13px;color:var(--ink-mute);margin-top:12px" data-i18n="u_warn">Otras redes o montos distintos no se acreditan. Apenas se confirme, tu descarga empieza sola. Si cerrás esta ventana, tu pedido queda guardado: lo recuperás con tu email y número de pedido.</p>
     </div>
     <div id="mDone" class="usdt" hidden>
       <h3 data-i18n="d_title">¡Pago confirmado!</h3>

@@ -3,7 +3,7 @@
   const { t, api } = SCU;
   const $ = (s) => document.querySelector(s);
   SCU.init({
-    r_h1: "Recover my purchase", r_sub: "Enter the email you bought with and your order number. We give you back your books with the same licence.",
+    r_h1: "Recover my purchase", r_sub: "Enter the email you bought with and your order number. You can download your books again once a week (counted from the first download), with the same licence.",
     r_email: "Purchase email", r_order: "Order number", r_go: "Recover",
     r_hint: "Can't find your order number? Message us on Instagram at @sacred.circles.art with your email and we'll sort it out.",
     f_terms: "Terms & licence", f_priv: "Privacy",

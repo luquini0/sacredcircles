@@ -19,7 +19,7 @@
     samples_note: "Reduced preview. In the book every mandala fills a full page.",
     how_h2: "Easy to buy, made to print", how_sub: "Pay, get your link, download. No accounts, no passwords.",
     s1_h: "Choose", s1_p: "One, two or all three books.", s2_h: "Pay", s2_p: "Mercado Pago from Argentina, or USDT from anywhere in the world.",
-    s3_h: "Get your order", s3_p: "It appears instantly, with an order number to recover it any time.", f_recover: "Recover my purchase", nav_recover: "My purchase", s4_h: "Download & print", s4_p: "PDF or ZIP, in A5, A4, Letter, A3 or A2.",
+    s3_h: "Get your order", s3_p: "It confirms and your download starts by itself. Keep your order number to download again.", letter: "Letter", m_size: "Download size", m_size_hint: "Your download starts by itself once the payment is confirmed. You can download again once a week.", f_recover: "Recover my purchase", nav_recover: "My purchase", s4_h: "Download & print", s4_p: "PDF or ZIP in A5, A4, Letter, A3 or A2, with your personal licence.",
     f1_h: "Vector", f1_p: "Prints crisp from 10 to 50 cm.", f2_h: "Total symmetry", f2_p: "Every petal in its place, no overlaps.",
     f3_h: "Binding on top", f3_p: "A top strip to bind without touching the drawing.", f4_h: "Your artwork", f4_p: "Room for name, signature and date on every page.",
     tree_h2: "Every book plants trees",
@@ -27,7 +27,7 @@
     tree_p2: "Our goal is to reforest <strong>1 km² (100 hectares)</strong>. The bar fills with every book sold; we don't publish the exact amount, but we do share every milestone.",
     tree_fine: "Reforesting one hectare in Latin America costs between USD 1,500 and 5,000. When the fund reaches the first investment we will announce it on our social media with photos and location.",
     faq_h2: "Frequently asked questions",
-    q1: "How do I get my books?", a1: "As soon as the payment is confirmed you see your downloads page, with your order number. There you choose the size and download each book or everything in one ZIP. Keep the number: with your email it lets you recover your books any time.",
+    q1: "How do I get my books?", a1: "You choose the size at checkout and, as soon as the payment is confirmed, the download starts by itself (one PDF, or one ZIP if you bought several books). After that you can download again once a week, counted from the first download, with your email and order number.",
     q2: "How can I pay?", a2: "With Mercado Pago (card, transfer or cash in Argentina; the price is converted to pesos at checkout) or with USDT on the TRON network (TRC20) from any country.",
     q3: "Can I print at any size?", a3: "Yes. The mandalas are vector: pick A5, A4, Letter, A3 or A2 and they stay crisp. For special sizes (for example 40 × 40 cm) message us on Instagram.",
     q4: "Can I share it with others?", a4: "Each purchase includes a personal, non-transferable licence, and your copy carries your email and order number. Print it as often as you like for your own use; the file may not be shared, resold or published.",
@@ -39,7 +39,7 @@
     m_tree: "30% of your purchase plants native trees.",
     u_title: "Pay with USDT", u_p: "Send exactly this amount on the <b>TRON (TRC20)</b> network. The extra decimals identify your order.",
     copy: "COPY", u_wait: "Waiting for your payment… it confirms automatically (1–3 min).",
-    u_warn: "Other networks or different amounts are not credited. You can close this window: your order is saved and you can recover it with your email and order number.",
+    u_warn: "Other networks or different amounts are not credited. Your download starts by itself once it's confirmed. If you close this window your order is saved: recover it with your email and order number.",
     d_title: "Payment confirmed!", d_p: "Thank you for being part of this. Your books are ready.", d_btn: "Go to my downloads",
   };
   SCU.init(EN);
@@ -81,7 +81,8 @@
   $("#goPay").addEventListener("click", openModal);
 
   /* ---- checkout ---- */
-  let method = "mp", pollTimer = null;
+  let method = "mp", pollTimer = null, dlSize = "A4";
+  $$("#mSizes button").forEach((b) => b.addEventListener("click", () => { dlSize = b.dataset.s; $$("#mSizes button").forEach((x) => x.setAttribute("aria-pressed", String(x === b))); }));
   function renderSummary() {
     const items = [...sel];
     const rows = items.map((k) => `<div><span>${bookName(k)} · 25 mandalas</span><span>${usd(P.book)}</span></div>`);
@@ -115,7 +116,7 @@
     if (!$("#mTerms").checked) { err.textContent = t("Aceptá los términos para continuar.", "Please accept the terms to continue."); return; }
     btn.disabled = true; btn.textContent = t("Un momento…", "One moment…");
     try {
-      const r = await api("/api/checkout", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ items: [...sel], email, method, lang: SCU.lang() }) });
+      const r = await api("/api/checkout", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ items: [...sel], email, method, lang: SCU.lang(), size: dlSize }) });
       if (!r.ok) { err.textContent = t(...(ERR[r.data && r.data.error] || ERR.payment_provider)); return; }
       const d = r.data;
       if (d.redirect) { rememberOrder(d); location.href = d.redirect; return; }
@@ -135,7 +136,7 @@
     clearInterval(pollTimer);
     pollTimer = setInterval(async () => {
       const r = await api(`/api/order?o=${d.orderId}&t=${d.token}`).catch(() => null);
-      if (r && r.ok && r.data.status === "paid") { clearInterval(pollTimer); $("#dLink").href = `descargar.html?o=${d.orderId}&t=${d.token}`; show("mDone"); }
+      if (r && r.ok && r.data.status === "paid") { clearInterval(pollTimer); location.href = `descargar.html?o=${d.orderId}&t=${d.token}`; }
     }, 6000);
   }
 
