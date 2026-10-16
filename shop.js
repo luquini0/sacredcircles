@@ -14,7 +14,7 @@
     b_teens: "Teens", b_teens_age: "Layers and rhythm", b_teens_p: "Double lines, layers and patterns with more movement. A stylish challenge to test palettes and gradients.",
     b_adults: "Adults", b_adults_age: "Calm and detail", b_adults_p: "Fine curves and intricate geometry, made to be coloured slowly, one layer at a time.",
     b_25: "25 mandalas", add: "Add", added: "Added ✓",
-    pack_h: "Pack of all 3 books", pack_p: "75 mandalas for the whole family. You save and we plant more.", buy_pack: "Buy the pack",
+    pack_h: "Pack of all 3 books", pack_p: "75 mandalas for the whole community. You save and we plant more.", buy_pack: "Buy the pack",
     samples_h2: "See what's inside", samples_sub: "Three pages from each book. Drawn with vector curves: total symmetry and clean lines that never pixelate at any size.",
     samples_note: "Reduced preview. In the book every mandala fills a full page.",
     how_h2: "Easy to buy, made to print", how_sub: "Pay, get your link, download. No accounts, no passwords.",
@@ -30,7 +30,7 @@
     q1: "How do I get my books?", a1: "As soon as the payment is confirmed you see your downloads page and we email you the same link. There you choose the size and download each book or everything in one ZIP.",
     q2: "How can I pay?", a2: "With Mercado Pago (card, transfer or cash in Argentina; the price is converted to pesos at checkout) or with USDT on the TRON network (TRC20) from any country.",
     q3: "Can I print at any size?", a3: "Yes. The mandalas are vector: pick A5, A4, Letter, A3 or A2 and they stay crisp. For special sizes (for example 40 × 40 cm) message us on Instagram.",
-    q4: "Can I share it with others?", a4: "Each purchase includes a personal licence and your copy carries your name. Print it as often as you like for you and your family, but please don't resell or circulate the file. That is how we keep the price low and fund the trees.",
+    q4: "Can I share it with others?", a4: "We think of each book as one purchase for a small community: your family, classroom, workshop or close group. Print it and photocopy the pages as often as you like for that circle, but please don't resell or publish the digital file. Your copy carries your email as the licence.",
     q5: "Where exactly does the 30% go?", a5: "To a dedicated fund for reforestation with native species in burned or deforested areas of Latin America. We will show every milestone on Instagram.",
     q6: "I had a problem with my download", a6: "Message us on Instagram at @sacred.circles.art with your purchase email and we'll fix it. You can also have the link re-sent from the downloads page.",
     f_terms: "Terms & licence", f_priv: "Privacy", pay: "Pay",
@@ -45,7 +45,7 @@
   SCU.init(EN);
 
   /* ---- precios ---- */
-  const P = { book: 2, bundle: 5 };
+  const P = { book: 4, bundle: 10 };
   const NAMES = { kids: ["Niños", "Kids"], teens: ["Adolescentes", "Teens"], adults: ["Adultos", "Adults"] };
   const bookName = (k) => t(NAMES[k][0], NAMES[k][1]);
   const priceOf = (n) => (n === 3 ? P.bundle : n * P.book);
