@@ -13,7 +13,7 @@
     too_many: ["Demasiados intentos. Probá de nuevo en una hora.", "Too many attempts. Please try again in an hour."],
     server: ["Algo falló. Probá de nuevo en un momento.", "Something went wrong. Please try again shortly."],
   };
-  const NAMES = { kids: ["Niños", "Kids"], teens: ["Adolescentes", "Teens"], adults: ["Adultos", "Adults"] };
+  const NAMES = { kids: ["Niños", "Kids"], teens: ["Adolescentes", "Teens"], adults: ["Adultos", "Adults"], pack: ["Pack de los 3 libros", "3-book pack"] };
 
   // pedidos recordados en este mismo navegador
   try {

@@ -46,9 +46,11 @@
 
   /* ---- precios ---- */
   const P = { book: 5, bundle: 12 };
-  const NAMES = { kids: ["Niños", "Kids"], teens: ["Adolescentes", "Teens"], adults: ["Adultos", "Adults"] };
+  const NAMES = { kids: ["Niños", "Kids"], teens: ["Adolescentes", "Teens"], adults: ["Adultos", "Adults"], pack: ["Pack de los 3 libros", "3-book pack"] };
+  const BOOKS3 = ["kids", "teens", "adults"];
   const bookName = (k) => t(NAMES[k][0], NAMES[k][1]);
-  const priceOf = (n) => (n === 3 ? P.bundle : n * P.book);
+  const unit = (k) => (k === "pack" ? P.bundle : P.book);
+  const priceOf = (items) => items.reduce((sum, k) => sum + unit(k), 0);
   const usd = (n) => "USD " + n;
   function paintPrices() {
     $$('[data-price="book"]').forEach((e) => (e.textContent = usd(P.book)));
@@ -66,36 +68,48 @@
     if (first) { method = first; $$(".pay button").forEach((x) => x.setAttribute("aria-pressed", String(x.dataset.method === first))); }
   }).catch(() => {});
 
-  /* ---- carrito ---- */
+  /* ---- carrito: 4 productos (3 libros + el pack), maximo 1 de cada uno; todo se puede agregar y quitar ---- */
   const sel = new Set();
+  const items = () => [...BOOKS3, "pack"].filter((k) => sel.has(k));
+  const modalOpen = () => $("#modal").classList.contains("open");
+  function toggle(k) {
+    sel.has(k) ? sel.delete(k) : sel.add(k);
+    render();
+    if (modalOpen()) { if (!sel.size) closeModal(); else renderSummary(); }
+  }
   function render() {
     $$(".book").forEach((b) => {
       const on = sel.has(b.dataset.book);
       b.classList.toggle("picked", on);
-      const btn = $(".add", b); btn.textContent = on ? t("Agregado ✓", "Added ✓") : t("Agregar", "Add");
+      const btn = $(".add", b); btn.textContent = on ? t("✓ Agregado · Quitar", "✓ Added · Remove") : t("Agregar", "Add");
       btn.classList.toggle("primary", on); btn.classList.toggle("ghost", !on);
     });
+    const pk = $(".pack"), pb = $("#buyPack"), pon = sel.has("pack");
+    pk.classList.toggle("picked", pon); pb.textContent = pon ? t("✓ Agregado · Quitar", "✓ Added · Remove") : t("Agregar el pack", "Add the pack");
     const n = sel.size;
     $("#cartbar").classList.toggle("show", n > 0);
-    $("#cartN").textContent = n === 1 ? t("1 libro", "1 book") : t(n + " libros", n + " books");
-    $("#cartTotal").textContent = usd(priceOf(n));
+    $("#cartN").textContent = n === 1 ? t("1 producto", "1 item") : t(n + " productos", n + " items");
+    $("#cartTotal").textContent = usd(priceOf(items()));
   }
-  SCU.onLang(() => { render(); if (!$("#modal").classList.contains("open")) return; renderSummary(); });
-  $$(".book .add").forEach((b) => b.addEventListener("click", () => {
-    const k = b.closest(".book").dataset.book;
-    sel.has(k) ? sel.delete(k) : sel.add(k); render();
-  }));
-  $("#buyPack").addEventListener("click", () => { ["kids", "teens", "adults"].forEach((k) => sel.add(k)); render(); openModal(); });
+  SCU.onLang(() => { render(); if (modalOpen()) renderSummary(); });
+  $$(".book .add").forEach((b) => b.addEventListener("click", () => toggle(b.closest(".book").dataset.book)));
+  $("#buyPack").addEventListener("click", () => toggle("pack"));
+  $("#clearCart").addEventListener("click", () => { sel.clear(); render(); });
   $("#goPay").addEventListener("click", openModal);
 
   /* ---- checkout ---- */
   let method = "mp", pollTimer = null, dlSize = "A4";
   $$("#mSizes button").forEach((b) => b.addEventListener("click", () => { dlSize = b.dataset.s; $$("#mSizes button").forEach((x) => x.setAttribute("aria-pressed", String(x === b))); }));
   function renderSummary() {
-    const items = [...sel];
-    const rows = items.map((k) => `<div><span>${bookName(k)} · 25 mandalas</span><span>${usd(P.book)}</span></div>`);
-    if (items.length === 3) rows.push(`<div><span>${t("Descuento pack", "Pack discount")}</span><span>− ${usd(P.book * 3 - P.bundle)}</span></div>`);
-    $("#mSum").innerHTML = rows.join("") + `<div class="tot"><span>Total</span><b>${usd(priceOf(items.length))}</b></div>`;
+    const list = items();
+    let html = list.map((k) => `<div class="it"><span>${bookName(k)}${k === "pack" ? "" : " · 25 mandalas"}</span><span>${usd(unit(k))}<button class="rm" type="button" data-rm="${k}" aria-label="${t("Quitar", "Remove")} ${bookName(k)}">✕</button></span></div>`).join("");
+    if (sel.has("pack") && BOOKS3.some((k) => sel.has(k)))
+      html += `<p class="tip">${t("El pack ya incluye los 3 libros: podés quitar los libros sueltos.", "The pack already includes all 3 books: you can remove the single books.")}</p>`;
+    else if (!sel.has("pack") && BOOKS3.every((k) => sel.has(k)))
+      html += `<p class="tip">${t(`Con el pack pagás ${usd(P.bundle)} en vez de ${usd(P.book * 3)}.`, `With the pack you pay ${usd(P.bundle)} instead of ${usd(P.book * 3)}.`)} <button type="button" id="swapPack">${t("Cambiar al pack", "Switch to the pack")}</button></p>`;
+    $("#mSum").innerHTML = html + `<div class="tot"><span>Total</span><b>${usd(priceOf(list))}</b></div>`;
+    $$("#mSum [data-rm]").forEach((b) => b.addEventListener("click", () => toggle(b.dataset.rm)));
+    const sw = $("#swapPack"); if (sw) sw.addEventListener("click", () => { BOOKS3.forEach((k) => sel.delete(k)); sel.add("pack"); render(); renderSummary(); });
   }
   function show(id) { ["mForm", "mUsdt", "mDone"].forEach((x) => ($("#" + x).hidden = x !== id)); }
   function openModal() {
@@ -125,8 +139,14 @@
     if (/COMPLETAR/.test(window.SC.API) || (!avail.mp && !avail.usdt)) { err.textContent = t("La tienda abre muy pronto. ¡Gracias por tu interés!", "The store opens very soon. Thank you for your interest!"); return; }
     btn.disabled = true; btn.textContent = t("Un momento…", "One moment…");
     try {
-      const r = await api("/api/checkout", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ items: [...sel], email, method, lang: SCU.lang(), size: dlSize }) });
-      if (!r.ok) { err.textContent = t(...(ERR[r.data && r.data.error] || ERR.payment_provider)); return; }
+      const r = await api("/api/checkout", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ items: items(), email, method, lang: SCU.lang(), size: dlSize }) });
+      if (!r.ok) {
+        const code = r.data && r.data.error;
+        err.textContent = code === "already_owned"
+          ? t(`Ya tenés con ese email: ${r.data.owned.map(bookName).join(", ")}. Quitalo del carrito o recuperalo desde «Recuperar mi compra».`, `You already have with that email: ${r.data.owned.map(bookName).join(", ")}. Remove it from the cart or recover it from “Recover my purchase”.`)
+          : t(...(ERR[code] || ERR.payment_provider));
+        return;
+      }
       const d = r.data;
       if (d.redirect) { rememberOrder(d); location.href = d.redirect; return; }
       rememberOrder(d); showUsdt(d);
@@ -135,7 +155,7 @@
   });
 
   function rememberOrder(d) {
-    try { const all = JSON.parse(localStorage.getItem("sc_orders") || "[]").filter((x) => x.o !== d.orderId); all.unshift({ o: d.orderId, t: d.token, items: [...sel] }); localStorage.setItem("sc_orders", JSON.stringify(all.slice(0, 10))); } catch (_) {}
+    try { const all = JSON.parse(localStorage.getItem("sc_orders") || "[]").filter((x) => x.o !== d.orderId); all.unshift({ o: d.orderId, t: d.token, items: items() }); localStorage.setItem("sc_orders", JSON.stringify(all.slice(0, 10))); } catch (_) {}
   }
   function showUsdt(d) {
     show("mUsdt");

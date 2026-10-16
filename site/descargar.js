@@ -48,7 +48,7 @@
   }
 
   const orderBox = () => `<div class="msg ok" style="text-align:left"><b>${t("Tu número de pedido (licencia)", "Your order number (licence)")}:</b> <span style="font-family:var(--display);font-size:20px;letter-spacing:.05em">${esc(O.toUpperCase())}</span><br><span style="font-size:13.5px;opacity:.9">${t("Guardalo: con tu email te permite volver a bajar tus libros, una vez por semana, desde “Recuperar mi compra”.", "Keep it: with your email it lets you download your books again, once a week, from “Recover my purchase”.")}</span></div>`;
-  const books = () => order.items.map((k) => `<div class="dl"><img src="images/${NAMES[k][2]}.webp" alt=""><div class="nm"><b>${NAMES[k][L()]}</b><span>${t("25 mandalas · PDF", "25 mandalas · PDF")}</span></div></div>`).join("");
+  const books = () => (order.books || order.items).map((k) => `<div class="dl"><img src="images/${NAMES[k][2]}.webp" alt=""><div class="nm"><b>${NAMES[k][L()]}</b><span>${t("25 mandalas · PDF", "25 mandalas · PDF")}</span></div></div>`).join("");
   const tree = () => `<div class="treeline" style="margin-top:22px"><span>🌱</span><span>${t("Gracias: el 30% de tu compra planta árboles nativos.", "Thank you: 30% of your purchase plants native trees.")}</span></div>`;
   const status = (cls, txt) => { const s = document.getElementById("status"); if (s) s.innerHTML = txt ? `<div class="msg ${cls}">${txt}</div>` : ""; };
 
@@ -82,7 +82,7 @@
       <div class="sizes" id="sizes">${SIZES.map(([k, d]) => `<button type="button" data-s="${k}" aria-pressed="${k === size}">${sizeName(k)}<small>${d}</small></button>`).join("")}</div>
       <p class="hint">${t("Vectoriales: nítidos en cualquier tamaño. Si elegís otro tamaño, esa será tu descarga de la semana.", "Vector files: crisp at any size. If you choose another size, that will be your download for the week.")}</p>
       ${books()}
-      <button class="btn primary" id="go" type="button" style="width:100%;margin-top:6px">${order.items.length > 1 ? t("Descargar (ZIP)", "Download (ZIP)") : t("Descargar PDF", "Download PDF")}</button>
+      <button class="btn primary" id="go" type="button" style="width:100%;margin-top:6px">${(order.books || order.items).length > 1 ? t("Descargar (ZIP)", "Download (ZIP)") : t("Descargar PDF", "Download PDF")}</button>
       <div id="status" role="status"></div>${tree()}`;
     card.querySelectorAll("[data-s]").forEach((b) => b.addEventListener("click", () => { size = b.dataset.s; card.querySelectorAll("[data-s]").forEach((x) => x.setAttribute("aria-pressed", String(x === b))); }));
     document.getElementById("go").addEventListener("click", () => deliver(size, false));
