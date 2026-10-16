@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recuperar mi compra · Sacred Circles</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/png" href="images/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Fraunces:ital,opsz,wght@0,9..144,500..700;1,9..144,500&family=Outfit:wght@300..700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="page">
+<nav class="nav solid" aria-label="Principal">
+  <a class="brand" href="./">Sacred Circles</a>
+  <div class="nav-links"><button class="lang" id="lang" type="button" aria-label="Cambiar idioma / Change language">EN</button></div>
+</nav>
+<main>
+  <div class="card">
+    <h1 data-i18n="r_h1">Recuperar mi compra</h1>
+    <p class="sub" data-i18n="r_sub">Ingresá el email con el que compraste y tu número de pedido. Te devolvemos tus libros con la misma licencia.</p>
+    <div id="saved"></div>
+    <label class="f" for="rEmail" data-i18n="r_email">Email de la compra</label>
+    <input type="email" id="rEmail" autocomplete="email" inputmode="email" placeholder="nombre@correo.com">
+    <label class="f" for="rOrder" data-i18n="r_order">Número de pedido</label>
+    <input type="text" id="rOrder" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="A1B2C3D4E5F6" maxlength="20">
+    <p class="err" id="rErr" role="alert"></p>
+    <button class="btn primary" id="rGo" type="button" style="width:100%" data-i18n="r_go">Recuperar</button>
+    <p class="hint" style="text-align:center;margin-top:16px" data-i18n="r_hint">¿No encontrás tu número de pedido? Escribinos por Instagram a @sacred.circles.art con tu email y lo resolvemos.</p>
+  </div>
+</main>
+<footer class="foot">
+  <div class="ig"><a href="https://instagram.com/sacred.circles.art" target="_blank" rel="noopener">@sacred.circles.art</a><a href="https://instagram.com/circulos.sagrados.arte" target="_blank" rel="noopener">@circulos.sagrados.arte</a></div>
+  <div class="links"><a href="legal.html#terminos" data-i18n="f_terms">Términos y licencia</a><a href="legal.html#privacidad" data-i18n="f_priv">Privacidad</a></div>
+</footer>
+<script src="config.js"></script>
+<script src="common.js"></script>
+<script src="recuperar.js"></script>
+</body>
+</html>

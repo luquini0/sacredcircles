@@ -34,6 +34,7 @@
     <a class="hide-m" href="#muestras" data-i18n="nav_samples">Muestras</a>
     <a class="hide-m" href="#arboles" data-i18n="nav_trees">Árboles</a>
     <a class="hide-m" href="#preguntas" data-i18n="nav_faq">Preguntas</a>
+    <a class="hide-m" href="recuperar.html" data-i18n="nav_recover">Mi compra</a>
     <button class="lang" id="lang" type="button" aria-label="Cambiar idioma / Change language">EN</button>
   </div>
 </nav>
@@ -132,7 +133,7 @@
     <div class="grid4">
       <div class="step"><div class="n">1</div><h3 data-i18n="s1_h">Elegís</h3><p data-i18n="s1_p">Uno, dos o los tres libros.</p></div>
       <div class="step"><div class="n">2</div><h3 data-i18n="s2_h">Pagás</h3><p data-i18n="s2_p">Mercado Pago desde Argentina, o USDT desde cualquier parte del mundo.</p></div>
-      <div class="step"><div class="n">3</div><h3 data-i18n="s3_h">Recibís el link</h3><p data-i18n="s3_p">Aparece al instante y te llega también por email.</p></div>
+      <div class="step"><div class="n">3</div><h3 data-i18n="s3_h">Recibís tu pedido</h3><p data-i18n="s3_p">Aparece al instante, con un número de pedido para recuperarlo cuando quieras.</p></div>
       <div class="step"><div class="n">4</div><h3 data-i18n="s4_h">Descargás e imprimís</h3><p data-i18n="s4_p">PDF o ZIP, en A5, A4, Carta, A3 o A2.</p></div>
     </div>
     <div class="grid4 feat">
@@ -170,12 +171,12 @@
     <h2 data-i18n="faq_h2">Preguntas frecuentes</h2>
     <p class="sub"></p>
     <div class="faq">
-      <details><summary data-i18n="q1">¿Cómo recibo mis libros?</summary><p data-i18n="a1">Apenas se confirma el pago ves tu página de descargas y te enviamos el mismo link por email. Desde ahí elegís el tamaño y bajás cada libro por separado o todos en un ZIP.</p></details>
+      <details><summary data-i18n="q1">¿Cómo recibo mis libros?</summary><p data-i18n="a1">Apenas se confirma el pago ves tu página de descargas, con tu número de pedido. Desde ahí elegís el tamaño y bajás cada libro por separado o todos en un ZIP. Guardá el número: con tu email te permite recuperar los libros cuando quieras.</p></details>
       <details><summary data-i18n="q2">¿Con qué puedo pagar?</summary><p data-i18n="a2">Con Mercado Pago (tarjeta, transferencia o efectivo en Argentina; el precio se convierte a pesos al momento de pagar) o con USDT en la red TRON (TRC20) desde cualquier país.</p></details>
       <details><summary data-i18n="q3">¿Puedo imprimirlo en cualquier tamaño?</summary><p data-i18n="a3">Sí. Los mandalas son vectoriales: elegís A5, A4, Carta, A3 o A2 y se ven nítidos. Para tamaños especiales (por ejemplo 40 × 40 cm) escribinos por Instagram.</p></details>
       <details><summary data-i18n="q4">¿Puedo compartirlo con otras personas?</summary><p data-i18n="a4">Cada compra incluye una licencia personal e intransferible, y tu copia lleva tu email y número de pedido. Podés imprimirlo las veces que quieras para tu uso personal; el archivo no se puede compartir, revender ni publicar.</p></details>
       <details><summary data-i18n="q5">¿A dónde va exactamente el 30%?</summary><p data-i18n="a5">A un fondo exclusivo para reforestación con especies nativas en áreas quemadas o deforestadas de Latinoamérica. Iremos mostrando cada hito en Instagram.</p></details>
-      <details><summary data-i18n="q6">Tuve un problema con mi descarga</summary><p data-i18n="a6">Escribinos por Instagram a @sacred.circles.art con tu email de compra y lo resolvemos. También podés pedir que te reenviemos el link desde la página de descargas.</p></details>
+      <details><summary data-i18n="q6">Tuve un problema con mi descarga</summary><p data-i18n="a6">Escribinos por Instagram a @sacred.circles.art con tu email de compra y lo resolvemos. También podés usar «Recuperar mi compra» con tu email y número de pedido.</p></details>
     </div>
   </div>
 </section>
@@ -183,7 +184,7 @@
 <footer class="foot">
   <a class="brand" href="#inicio">Sacred Circles</a>
   <div class="ig"><a href="https://instagram.com/sacred.circles.art" target="_blank" rel="noopener">@sacred.circles.art</a><a href="https://instagram.com/circulos.sagrados.arte" target="_blank" rel="noopener">@circulos.sagrados.arte</a></div>
-  <div class="links"><a href="legal.html#terminos" data-i18n="f_terms">Términos y licencia</a><a href="legal.html#privacidad" data-i18n="f_priv">Privacidad</a></div>
+  <div class="links"><a href="recuperar.html" data-i18n="f_recover">Recuperar mi compra</a><a href="legal.html#terminos" data-i18n="f_terms">Términos y licencia</a><a href="legal.html#privacidad" data-i18n="f_priv">Privacidad</a></div>
   <p style="margin-top:18px">© Sacred Circles</p>
 </footer>
 
@@ -198,7 +199,7 @@
     <div id="mForm">
       <h3 id="mTitle" data-i18n="m_title">Finalizar compra</h3>
       <div class="sum" id="mSum"></div>
-      <label class="f" for="mEmail" data-i18n="m_email">Tu email (acá te llega el link)</label>
+      <label class="f" for="mEmail" data-i18n="m_email">Tu email (va en tu licencia y sirve para recuperar tu compra)</label>
       <input type="email" id="mEmail" autocomplete="email" inputmode="email" placeholder="nombre@correo.com">
       <label class="f" data-i18n="m_method">Medio de pago</label>
       <div class="pay">
@@ -217,7 +218,7 @@
       <div class="qr" id="uQr"></div>
       <div class="copy"><code id="uAddr"></code><button type="button" id="uCopy" data-i18n="copy">COPIAR</button></div>
       <p class="wait"><span class="spin"></span><span data-i18n="u_wait">Esperando tu pago… se confirma solo (1–3 min).</span></p>
-      <p style="font-size:13px;color:var(--ink-mute);margin-top:12px" data-i18n="u_warn">Otras redes o montos distintos no se acreditan. Podés cerrar esta ventana: te llegará un email al confirmarse.</p>
+      <p style="font-size:13px;color:var(--ink-mute);margin-top:12px" data-i18n="u_warn">Otras redes o montos distintos no se acreditan. Podés cerrar esta ventana: tu pedido queda guardado y lo recuperás con tu email y número de pedido.</p>
     </div>
     <div id="mDone" class="usdt" hidden>
       <h3 data-i18n="d_title">¡Pago confirmado!</h3>

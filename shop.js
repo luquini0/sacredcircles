@@ -19,7 +19,7 @@
     samples_note: "Reduced preview. In the book every mandala fills a full page.",
     how_h2: "Easy to buy, made to print", how_sub: "Pay, get your link, download. No accounts, no passwords.",
     s1_h: "Choose", s1_p: "One, two or all three books.", s2_h: "Pay", s2_p: "Mercado Pago from Argentina, or USDT from anywhere in the world.",
-    s3_h: "Get your link", s3_p: "It appears instantly and also arrives by email.", s4_h: "Download & print", s4_p: "PDF or ZIP, in A5, A4, Letter, A3 or A2.",
+    s3_h: "Get your order", s3_p: "It appears instantly, with an order number to recover it any time.", f_recover: "Recover my purchase", nav_recover: "My purchase", s4_h: "Download & print", s4_p: "PDF or ZIP, in A5, A4, Letter, A3 or A2.",
     f1_h: "Vector", f1_p: "Prints crisp from 10 to 50 cm.", f2_h: "Total symmetry", f2_p: "Every petal in its place, no overlaps.",
     f3_h: "Binding on top", f3_p: "A top strip to bind without touching the drawing.", f4_h: "Your artwork", f4_p: "Room for name, signature and date on every page.",
     tree_h2: "Every book plants trees",
@@ -27,19 +27,19 @@
     tree_p2: "Our goal is to reforest <strong>1 km² (100 hectares)</strong>. The bar fills with every book sold; we don't publish the exact amount, but we do share every milestone.",
     tree_fine: "Reforesting one hectare in Latin America costs between USD 1,500 and 5,000. When the fund reaches the first investment we will announce it on our social media with photos and location.",
     faq_h2: "Frequently asked questions",
-    q1: "How do I get my books?", a1: "As soon as the payment is confirmed you see your downloads page and we email you the same link. There you choose the size and download each book or everything in one ZIP.",
+    q1: "How do I get my books?", a1: "As soon as the payment is confirmed you see your downloads page, with your order number. There you choose the size and download each book or everything in one ZIP. Keep the number: with your email it lets you recover your books any time.",
     q2: "How can I pay?", a2: "With Mercado Pago (card, transfer or cash in Argentina; the price is converted to pesos at checkout) or with USDT on the TRON network (TRC20) from any country.",
     q3: "Can I print at any size?", a3: "Yes. The mandalas are vector: pick A5, A4, Letter, A3 or A2 and they stay crisp. For special sizes (for example 40 × 40 cm) message us on Instagram.",
     q4: "Can I share it with others?", a4: "Each purchase includes a personal, non-transferable licence, and your copy carries your email and order number. Print it as often as you like for your own use; the file may not be shared, resold or published.",
     q5: "Where exactly does the 30% go?", a5: "To a dedicated fund for reforestation with native species in burned or deforested areas of Latin America. We will show every milestone on Instagram.",
-    q6: "I had a problem with my download", a6: "Message us on Instagram at @sacred.circles.art with your purchase email and we'll fix it. You can also have the link re-sent from the downloads page.",
+    q6: "I had a problem with my download", a6: "Message us on Instagram at @sacred.circles.art with your purchase email and we'll fix it. You can also use “Recover my purchase” with your email and order number.",
     f_terms: "Terms & licence", f_priv: "Privacy", pay: "Pay",
-    m_title: "Checkout", m_email: "Your email (your link arrives here)", m_method: "Payment method", m_mp: "Argentina · pesos", m_usdt: "Worldwide · TRC20",
+    m_title: "Checkout", m_email: "Your email (goes on your licence and lets you recover your purchase)", m_method: "Payment method", m_mp: "Argentina · pesos", m_usdt: "Worldwide · TRC20",
     m_terms: "I accept the <a href=\"legal.html#terminos\" target=\"_blank\" rel=\"noopener\">terms and personal licence</a>.", m_go: "Continue to payment",
     m_tree: "30% of your purchase plants native trees.",
     u_title: "Pay with USDT", u_p: "Send exactly this amount on the <b>TRON (TRC20)</b> network. The extra decimals identify your order.",
     copy: "COPY", u_wait: "Waiting for your payment… it confirms automatically (1–3 min).",
-    u_warn: "Other networks or different amounts are not credited. You can close this window: we'll email you once it's confirmed.",
+    u_warn: "Other networks or different amounts are not credited. You can close this window: your order is saved and you can recover it with your email and order number.",
     d_title: "Payment confirmed!", d_p: "Thank you for being part of this. Your books are ready.", d_btn: "Go to my downloads",
   };
   SCU.init(EN);
@@ -105,6 +105,7 @@
   const ERR = {
     bad_email: ["Revisá tu email.", "Please check your email."],
     method_unavailable: ["Este medio de pago no está disponible por ahora. Probá con el otro.", "This payment method is unavailable right now. Try the other one."],
+    already_owned: ["Ya compraste este libro con ese email. Usá «Recuperar mi compra» (email + número de pedido) o sacalo del carrito.", "You already bought this book with that email. Use “Recover my purchase” (email + order number) or remove it from the cart."],
     payment_provider: ["No pudimos iniciar el pago. Probá de nuevo en un momento.", "We couldn't start the payment. Please try again shortly."],
   };
   $("#mPay").addEventListener("click", async () => {
@@ -117,12 +118,15 @@
       const r = await api("/api/checkout", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ items: [...sel], email, method, lang: SCU.lang() }) });
       if (!r.ok) { err.textContent = t(...(ERR[r.data && r.data.error] || ERR.payment_provider)); return; }
       const d = r.data;
-      if (d.redirect) { location.href = d.redirect; return; }
-      showUsdt(d);
+      if (d.redirect) { rememberOrder(d); location.href = d.redirect; return; }
+      rememberOrder(d); showUsdt(d);
     } catch (_) { err.textContent = t(...ERR.payment_provider); }
     finally { btn.disabled = false; btn.textContent = t("Continuar al pago", "Continue to payment"); }
   });
 
+  function rememberOrder(d) {
+    try { const all = JSON.parse(localStorage.getItem("sc_orders") || "[]").filter((x) => x.o !== d.orderId); all.unshift({ o: d.orderId, t: d.token, items: [...sel] }); localStorage.setItem("sc_orders", JSON.stringify(all.slice(0, 10))); } catch (_) {}
+  }
   function showUsdt(d) {
     show("mUsdt");
     $("#uAmt").textContent = d.usdt.amount; $("#uAddr").textContent = d.usdt.address;
